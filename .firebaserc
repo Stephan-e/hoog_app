@@ -1,0 +1,38 @@
+{
+  "projects": {
+    "default": "hoog-app",
+    "master": "hoog-app",
+    "prod": "hoog-app"
+  },
+  "ci": {
+    "copyVersion": true,
+    "createConfig": {
+      "master": {
+        "env": "staging",
+        "firebase": {
+          "apiKey": "AIzaSyBFxNdwdbti4DUq1tPHNXoGahN6OprQyQM",
+          "authDomain": "hoog-app.firebaseapp.com",
+          "databaseURL": "https://hoog-app.firebaseio.com",
+          "projectId": "hoog-app",
+          "storageBucket": "hoog-app.appspot.com",
+          "messagingSenderId": "2313552358"
+        },
+        "sentryDsn": "${SENTRY_DSN}",
+        "analyticsTrackingId": "${GA_TRACKING_ID}"
+      },
+      "prod": {
+        "env": "production",
+        "firebase": {
+          "apiKey": "AIzaSyBFxNdwdbti4DUq1tPHNXoGahN6OprQyQM",
+          "authDomain": "hoog-app.firebaseapp.com",
+          "databaseURL": "https://hoog-app.firebaseio.com",
+          "projectId": "hoog-app",
+          "storageBucket": "hoog-app.appspot.com",
+          "messagingSenderId": "2313552358"
+        },
+        "sentryDsn": "${SENTRY_DSN}",
+        "analyticsTrackingId": "${GA_TRACKING_ID}"
+      }
+    }
+  }
+}
