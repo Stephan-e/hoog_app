@@ -13,16 +13,31 @@ export default compose(
     // Listener for projects the current user created
     {
       collection: 'projects',
-      doc: params.projectId
+      doc: params.projectId,
     }
   ]),
-  // Map projects from state to props
   connect(({ firestore: { data } }, { params }) => ({
     project: get(data, `projects.${params.projectId}`)
   })),
+
+  firestoreConnect(({ params }) => [
+    // Listener for projects the current user created
+    {
+      collection: 'measurements',
+      where: ['box', '==', params.projectId],
+      doc: params.measureId,
+    }
+  ]),
+
   connect(({ firestore: { data } }, { params }) => ({
-    measurements: get(data, `projects.${params.projectId}.measurements`)
+    measurements: get(data, `measurements`)
   })),
+  
+  // Map projects from state to props
+  
+  // connect(({ firestore: { data } }, { params }) => ({
+  //   measurements: get(data, `measurements.${params.measurementId}`)
+  // })),
   // Show loading spinner while project is loading
   spinnerWhileLoading(['project'])
 )

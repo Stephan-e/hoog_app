@@ -11,7 +11,7 @@
     "build:functions": "npm run build --prefix functions",
     "deploy": "firebase-ci deploy -s",
     "createConfig": "firebase-ci createConfig",
-    "start": "cross-env NODE_ENV=development webpack-dashboard -p 1234 -c cyan -m -t hoog_app -- node build/scripts/start",
+    "start": "cross-env NODE_ENV=development webpack-dashboard -p 1235 -c cyan -m -t hoog_app -- node build/scripts/start",
     "start:simple": "cross-env NODE_ENV=development node build/scripts/start",
     "lint": "eslint src functions server build project.config.js",
     "lint:fix": "npm run lint -- --fix",
