@@ -23,11 +23,11 @@ export const Navbar = ({
     <Toolbar>
       <Typography
         variant="h6"
-        color="inherit"
+        color="#2C2B6F"
         className={classes.flex}
         component={Link}
         to={authExists ? LIST_PATH : '/'}>
-        hoog_app
+        hoog
       </Typography>
       {authExists ? (
         <AccountMenu
