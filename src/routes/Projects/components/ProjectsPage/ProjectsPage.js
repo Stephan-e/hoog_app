@@ -33,6 +33,7 @@ export const ProjectsPage = ({
             <ProjectTile
               key={`Project-${project.id}-${ind}`}
               name={project.name}
+              description={project.description}
               onSelect={() => goToProject(project.id)}
               onDelete={() => deleteProject(project.id)}
             />

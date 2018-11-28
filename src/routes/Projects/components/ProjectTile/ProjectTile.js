@@ -6,12 +6,15 @@ import Tooltip from '@material-ui/core/Tooltip'
 import DeleteIcon from '@material-ui/icons/Delete'
 import classes from './ProjectTile.scss'
 
-export const ProjectTile = ({ name, onSelect, onDelete, showDelete }) => (
+export const ProjectTile = ({ name, description, onSelect, onDelete, showDelete }) => (
   <Paper className={classes.container}>
     <div className={classes.top}>
       <span className={classes.name} onClick={onSelect}>
         {name || 'No Name'}
       </span>
+      <div>
+        <p>{description || 'No description'}</p>
+      </div>
       {showDelete && onDelete ? (
         <Tooltip title="delete">
           <IconButton onClick={onDelete}>
@@ -25,6 +28,7 @@ export const ProjectTile = ({ name, onSelect, onDelete, showDelete }) => (
 
 ProjectTile.propTypes = {
   name: PropTypes.string,
+  description: PropTypes.string,
   onSelect: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
   showDelete: PropTypes.bool

@@ -47,6 +47,10 @@ export default compose(
     goToAccount: props => () => {
       props.router.push(ACCOUNT_PATH)
       props.closeAccountMenu()
+    },
+    goToBoxes: props => () => {
+      props.router.push('/projects')
+      props.closeAccountMenu()
     }
   }),
   withProps(({ auth, profile }) => ({

@@ -13,6 +13,7 @@ export const Navbar = ({
   displayName,
   authExists,
   goToAccount,
+  goToBoxes,
   handleLogout,
   closeAccountMenu,
   anchorEl,
@@ -35,6 +36,7 @@ export const Navbar = ({
           displayName={displayName}
           onLogoutClick={handleLogout}
           goToAccount={goToAccount}
+          goToBoxes={goToBoxes}
           closeAccountMenu={closeAccountMenu}
           handleMenu={handleMenu}
           anchorEl={anchorEl}

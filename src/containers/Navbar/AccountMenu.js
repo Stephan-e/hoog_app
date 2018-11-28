@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -16,6 +17,7 @@ export const AccountMenu = ({
   avatarUrl,
   displayName,
   goToAccount,
+  goToBoxes,
   onLogoutClick,
   closeAccountMenu,
   anchorEl,
@@ -23,6 +25,7 @@ export const AccountMenu = ({
   classes
 }) => (
   <div>
+    <Button onClick={goToBoxes} variant='raised' color='secondary'>Grow boxes</Button>
     <IconButton
       aria-owns={anchorEl ? 'menu-appbar' : null}
       aria-haspopup="true"
@@ -47,6 +50,7 @@ AccountMenu.propTypes = {
   displayName: PropTypes.string,
   avatarUrl: PropTypes.string,
   goToAccount: PropTypes.func.isRequired,
+  goToBoxes: PropTypes.func.isRequired,
   onLogoutClick: PropTypes.func.isRequired,
   anchorEl: PropTypes.object,
   closeAccountMenu: PropTypes.func.isRequired,

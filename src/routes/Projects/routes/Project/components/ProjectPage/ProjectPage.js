@@ -5,62 +5,95 @@ import CardContent from '@material-ui/core/CardContent'
 import { LineChart, Line } from 'recharts';
 import classes from './ProjectPage.scss'
 
-var canvas = document.createElement('canvas');
 
-const ProjectPage = ({ params, project, measurements}) => {
+class ProjectPage extends React.Component {
+    constructor(props) {
+        super(props)
+    }
 
-    const converted_measurements = measurements && Object.keys(measurements).map(key => (
-        measurements[key]
-    )).filter(i => i.humidity > 0 && i.temperature > 0)
+    componentDidMount () {
+        let headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
 
+        const route = 'https://' + this.props.project.box +'.balena-devices.com/status'
+        const config = {
+            // credentials: 'include',
+            method: 'GET',
+            mode: 'cors',
+            headers
+        }
 
-    console.log("CONVERTED MEASUERMENTS", converted_measurements);
+        fetch(route, config)
+		.then(response => {
+            console.log("REPONSE FROM API CALL", response);
+            
+			// if (response.ok) {
+			// 	return response.json()
+			// } else {
+			// 	return response
+			// }
+			
+		})
+		.catch(err => err)
+    }
+
+    render() {
+        const { params, project, measurements} = this.props
+
+        const converted_measurements = measurements && Object.keys(measurements).map(key => (
+            measurements[key]
+        )).filter(i => i.humidity > 0 && i.temperature > 0)
     
+    
+        console.log("CONVERTED MEASUERMENTS", converted_measurements);
 
-    return (
-        <div className={classes.container}>
-            <Card className={classes.card}>
-            {
-                project &&
-                <CardContent>
-                    <h1>{project.name || 'Project'}</h1>
-                    <div>
-                        <p>{project.description}</p>
-                    </div>
-                    <div>
-                        <LineChart width={400} height={400} data={converted_measurements}>
-                            <Line type="monotone" dataKey="humidity" stroke="#8884d8" />
-                            <Line type="monotone" dataKey="temperature" stroke="#82ca9d" />
-                        </LineChart>
+        return (
+            <div className={classes.container}>
+                <Card className={classes.card}>
+                {
+                    project &&
+                    <CardContent>
+                        <h1>{project.name || 'Project'}</h1>
+                        <div>
+                            <p>{project.description}</p>
+                        </div>
+                        <div>
+                            <LineChart width={400} height={400} data={converted_measurements}>
+                                <Line type="monotone" dataKey="humidity" stroke="#8884d8" />
+                                <Line type="monotone" dataKey="temperature" stroke="#82ca9d" />
+                            </LineChart>
 
-                    </div>
-                    <h2>Measurements</h2>
-                    <div>
-                        {
-                            converted_measurements && converted_measurements.length > 0 ?
-                            converted_measurements.map((m, index) => (
-                                <div key={index}>
-                                    <b>Humidity: </b> {m.humidity}
-                                    <br/>
-                                    <b>Temperature: </b> {m.temperature}
-                                    <br/>
-                                    <b>Time: </b> {m.timestamp}
-                                    <br/>
-                                    <b>---</b>
-                                </div>
+                        </div>
+                        <h2>Measurements</h2>
+                        <div>
+                            {
+                                converted_measurements && converted_measurements.length > 0 ?
+                                converted_measurements.map((m, index) => (
+                                    <div key={index}>
+                                        <b>Humidity: </b> {m.humidity}
+                                        <br/>
+                                        <b>Temperature: </b> {m.temperature}
+                                        <br/>
+                                        <b>Time: </b> {m.timestamp}
+                                        <br/>
+                                        <b>---</b>
+                                    </div>
+                                    
+                                )) :
+                                <p>No measurements yet</p>
                                 
-                            )) :
-                            <p>No measurements yet</p>
-                            
-                        }
+                            }
 
-                    </div>
-                    
-                </CardContent> 
-            }
-            </Card>
+                        </div>
+                        
+                    </CardContent> 
+                }
+                </Card>
         </div>
-    )
+        )
+    }
 }
 
 
