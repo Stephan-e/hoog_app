@@ -2,35 +2,29 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
-import Typography from '@material-ui/core/Typography'
+import { LineChart, Line } from 'recharts';
 import classes from './ProjectPage.scss'
-import ReactChartkick, { LineChart, PieChart } from 'react-chartkick'
-import Chart from 'chart.js'
-
-ReactChartkick.addAdapter(Chart)
 
 var canvas = document.createElement('canvas');
 
 const ProjectPage = ({ params, project, measurements}) => {
 
-    const converted_measurements = measurements &&  Object.keys(measurements).map(key => (
+    const converted_measurements = measurements && Object.keys(measurements).map(key => (
         measurements[key]
     ))
 
-    // var temp = Object.keys(measurements).map(function(e) {
-    //     return e.temperature;
-    //  });
-    var hum = Object.keys(measurements).map(function(e) {
-        return e.humidity;
-     });
-    //  var time = Object.keys(measurements).map(function(e) {
-    //     return e.time;
-    //  });
+
+    console.log("CONVERTED MEASUERMENTS", converted_measurements);
+    
+
+
 
 
     console.log("Converted measurements", converted_measurements);
     
-    
+    const measurements_for_graph = converted_measurements && converted_measurements.map(m => {
+
+    })
 
     return (
         <div className={classes.container}>
@@ -38,15 +32,18 @@ const ProjectPage = ({ params, project, measurements}) => {
             {
                 project &&
                 <CardContent>
-                    <Typography className={classes.h6} component="h2">
-                        {project.name || 'Project'}
-                    </Typography>
-                    <Typography className={classes.subtitle}>{project.description}</Typography>
+                    <h1>{project.name || 'Project'}</h1>
                     <div>
-                    <pre>{JSON.stringify(project, null, 2)}</pre>
+                        <p>{project.description}</p>
+                    </div>
+                    <div>
+                        <LineChart width={400} height={400} data={converted_measurements}>
+                            <Line type="monotone" dataKey="humidity" stroke="#8884d8" />
+                            <Line type="monotone" dataKey="temperature" stroke="#82ca9d" />
+                        </LineChart>
+
                     </div>
                     <h2>Measurements</h2>
-                    {/* <b>{hum}</b> */}
                     <div>
                         {
                             converted_measurements && converted_measurements.length > 0 ?
