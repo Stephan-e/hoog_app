@@ -11,20 +11,11 @@ const ProjectPage = ({ params, project, measurements}) => {
 
     const converted_measurements = measurements && Object.keys(measurements).map(key => (
         measurements[key]
-    ))
+    )).filter(i => i.humidity > 0 && i.temperature > 0)
 
 
     console.log("CONVERTED MEASUERMENTS", converted_measurements);
     
-
-
-
-
-    console.log("Converted measurements", converted_measurements);
-    
-    const measurements_for_graph = converted_measurements && converted_measurements.map(m => {
-
-    })
 
     return (
         <div className={classes.container}>
