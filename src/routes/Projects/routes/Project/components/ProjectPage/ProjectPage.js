@@ -67,11 +67,9 @@ class ProjectPage extends React.Component {
    
     }
 
-    
-
     render() {
         const { params, project, measurements } = this.props
-        const { humidity, temperature, schedule, loading } = this.state;
+        const { humidity, temperature, schedule, loading, vent, light, water } = this.state;
         const converted_measurements = measurements && Object.keys(measurements)
         .map(key => (
             measurements[key]))
@@ -83,42 +81,95 @@ class ProjectPage extends React.Component {
             return moment(tickItem).format(' LT')
             }
     
-         console.log("CONVERTED MEASUERMENTS", status);
+         console.log("CONVERTED MEASUERMENTS", vent);
         
 
         return (
-            <div className={classes.container}>
-                {
-                    loading ?
-                    <p>Loading...</p> :
-                    <Card className={classes.card}>
+            <div>
+                <div className={classes.container}>
+                    {
+                        loading ?
+                        <p>Loading...</p> :
+                        <Card className={classes.card}>
+                        {
+                                project &&
+                                <CardContent>
+                                    <h1 style ={{textAlign: 'center'}}>{project.name || 'Project'}</h1>
+                                    <div>
+                                        <div style={{ }}>
+                                            <p ><b>Box Description:</b> </p>
+                                            <p style={{
+                                                fontWeight: 300
+                                                }}>{project.description}</p>
+                                        </div>
+                                        <div style={{}}>
+                                            <p ><b>ID: </b></p>
+                                            <p style={{
+                                                fontWeight: 300,
+                                                fontStyle: 'italic'
+                                                }}>{project.box}</p>
+                                        </div>
+                                        <br/>
+                                        
+                                    </div>
+                                    </CardContent>
+                        }
+                        </Card>
+                    }
+                </div>
+                <div className={classes.container}>
+                    {
+                        loading ?
+                        null :
+                        <Card className={classes.card}>
+                        {
+                                project &&
+                                <CardContent>
+                                    <h1 style ={{textAlign: 'center'}}>{project.name || 'Project'}</h1>
+                                    <div>
+                                        
+                                        <div style={{}}>
+                                        <p><b>Temperature:</b> {temperature}º</p>
+                                        <p><b>Humidity:</b> {humidity}%</p>
+                                        </div>
+                                        <br/>
+                                        <p><b>Vent: </b>  
+                                            {{vent} ? (
+                                                <a>On</a>
+                                            ) : <a>Off</a>}
+                                        </p>
+                                        <p><b>Light: </b> 
+                                            {{light} ? (
+                                                <a>On</a>
+                                            ) : <a>Off</a>}
+                                        </p>
+                                        <p><b>Water: </b> 
+                                            {{water} ? (
+                                                <a>On</a>
+                                            ) : <a>Off</a>}
+                                        </p>
+                                        <br/>
+                                        
+
+                                        <p><b>Schedule:</b> <br/>
+                                        <b>COB hour on: </b>{schedule.COB_hour_on}:00<br/>
+                                        <b>COB hour off: </b>{schedule.COB_hour_off}:00<br/>
+                                        <b>Vent hour on: </b>{schedule.vent_hour_on}:00<br/>
+                                        <b>Vent hour off: </b>{schedule.vent_hour_off}:00<br/>
+                                        <b>Water hour on: </b>{schedule.water_hour_on}:00<br/>
+                                        <b>Water hour off: </b>{schedule.water_hour_off}:01<br/>
+                                        </p>
+                                    </div>
+                                    </CardContent>
+                        }
+                        </Card>
+                    }
+                </div>
+                <div className={classes.container}>
+                        <Card className={classes.card}>
                         {
                             project &&
                             <CardContent>
-                                <h1>{project.name || 'Project'}</h1>
-                                <div>
-                                    <p >Box Description: </p>
-                                    <p style={{
-                                        fontWeight: 300
-                                        }}>{project.description}</p>
-                                    <br/>
-                                    <p>Grow box ID: </p>
-                                    <p style={{
-                                        fontWeight: 300
-                                        }}>{project.box}</p>
-                                    <br/>
-
-                                    <p><b>Temperature:</b> {temperature}</p>
-                                    <p><b>Humidity:</b> {humidity}</p>
-                                    <p><b>Schedule:</b> <br/>
-                                    <b>COB hour off: </b>{schedule.COB_hour_off}<br/>
-                                    <b>COB hour on: </b>{schedule.COB_hour_on}<br/>
-                                    <b>Vent hour off: </b>{schedule.vent_hour_off}<br/>
-                                    <b>Vent hour on: </b>{schedule.vent_hour_on}<br/>
-                                    <b>Water hour off: </b>{schedule.water_hour_off}<br/>
-                                    <b>Water hour on: </b>{schedule.water_hour_on}<br/>
-                                    </p>
-                                </div>
                                 <h2>Measurements</h2>
                                 <div>
                                     <LineChart width={400} height={400} data={converted_measurements}>
@@ -156,8 +207,9 @@ class ProjectPage extends React.Component {
                                 
                             </CardContent> 
                         }
-                    </Card>
-                }    
+                        </Card>
+                        
+                </div>
             </div>
         )
     }
