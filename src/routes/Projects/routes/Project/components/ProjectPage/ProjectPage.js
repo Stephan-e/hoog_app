@@ -94,15 +94,15 @@ class ProjectPage extends React.Component {
                         {
                                 project &&
                                 <CardContent>
-                                    <h1 style ={{textAlign: 'center'}}>{project.name || 'Project'}</h1>
+                                    <h2 style ={{textAlign: 'center'}}>{project.name || 'Project'}</h2>
                                     <div>
-                                        <div style={{ }}>
+                                        <div style={{ float: 'left'}}>
                                             <p ><b>Box Description:</b> </p>
                                             <p style={{
                                                 fontWeight: 300
                                                 }}>{project.description}</p>
                                         </div>
-                                        <div style={{}}>
+                                        <div style={{float: 'right'}}>
                                             <p ><b>ID: </b></p>
                                             <p style={{
                                                 fontWeight: 300,
@@ -125,32 +125,44 @@ class ProjectPage extends React.Component {
                         {
                                 project &&
                                 <CardContent>
-                                    <h1 style ={{textAlign: 'center'}}>{project.name || 'Project'}</h1>
                                     <div>
-                                        
-                                        <div style={{}}>
-                                        <p><b>Temperature:</b> {temperature}º</p>
-                                        <p><b>Humidity:</b> {humidity}%</p>
+                                        <div style={{float: 'left'}}>
+                                            <p><b>Temperature:</b> {temperature}º</p>
+                                            <p><b>Humidity:</b> {humidity}%</p>
                                         </div>
-                                        <br/>
-                                        <p><b>Vent: </b>  
-                                            {{vent} ? (
-                                                <a>On</a>
-                                            ) : <a>Off</a>}
-                                        </p>
-                                        <p><b>Light: </b> 
-                                            {{light} ? (
-                                                <a>On</a>
-                                            ) : <a>Off</a>}
-                                        </p>
-                                        <p><b>Water: </b> 
-                                            {{water} ? (
-                                                <a>On</a>
-                                            ) : <a>Off</a>}
-                                        </p>
-                                        <br/>
-                                        
-
+                                        <div style={{float: 'right'}}>
+                                            <p><b>Vent: </b>  
+                                                {{vent} ? (
+                                                    <a>On</a>
+                                                ) : <a>Off</a>}
+                                            </p>
+                                            <p><b>Light: </b> 
+                                                {{light} ? (
+                                                    <a>On</a>
+                                                ) : <a>Off</a>}
+                                            </p>
+                                            <p><b>Water: </b> 
+                                                {{water} ? (
+                                                    <a>On</a>
+                                                ) : <a>Off</a>}
+                                            </p>
+                                            <br/>
+                                        </div>
+                                    </div>
+                                    </CardContent>
+                        }
+                        </Card>
+                    }
+                </div>
+                <div className={classes.container}>
+                    {
+                        loading ?
+                        null :
+                        <Card className={classes.card}>
+                        {
+                                project &&
+                                <CardContent>
+                                    <div>
                                         <p><b>Schedule:</b> <br/>
                                         <b>COB hour on: </b>{schedule.COB_hour_on}:00<br/>
                                         <b>COB hour off: </b>{schedule.COB_hour_off}:00<br/>
@@ -170,7 +182,7 @@ class ProjectPage extends React.Component {
                         {
                             project &&
                             <CardContent>
-                                <h2>Measurements</h2>
+                                <h2 style ={{textAlign: 'center'}}>Measurements</h2>
                                 <div>
                                     <LineChart width={400} height={400} data={converted_measurements}>
                                         <XAxis dataKey="timestamp" tickFormatter={formatXAxis}/>
