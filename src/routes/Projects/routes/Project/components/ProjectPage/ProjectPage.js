@@ -10,7 +10,12 @@ import moment from 'moment'
 
 class ProjectPage extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
+        
+        this.state = {
+            hits: [],
+          };
+        
     }
 
    
@@ -32,13 +37,14 @@ class ProjectPage extends React.Component {
 		.then(response => {
             console.log("REPONSE FROM API CALL", response);
             
-			// if (response.ok) {
-			// 	return response.json()
-			// } else {
-			// 	return response
-			// }
+			if (response.ok) {
+				return response.json()
+			} else {
+				return response
+			}
 			
-		})
+        })
+        .then(data => this.setState({ status: data.status }))
         .catch(err => err)
    
     }
@@ -47,7 +53,7 @@ class ProjectPage extends React.Component {
 
     render() {
         const { params, project, measurements} = this.props
-
+        const { status } = this.state;
         const converted_measurements = measurements && Object.keys(measurements)
         .map(key => (
             measurements[key]))
@@ -56,10 +62,10 @@ class ProjectPage extends React.Component {
     
         function formatXAxis(tickItem) {
             // If using moment.js
-            return moment(tickItem).format('MMM Do')
+            return moment(tickItem).format(' LT')
             }
     
-        console.log("CONVERTED MEASUERMENTS", converted_measurements);
+         console.log("CONVERTED MEASUERMENTS", status);
         
 
         return (
@@ -70,14 +76,29 @@ class ProjectPage extends React.Component {
                     <CardContent>
                         <h1>{project.name || 'Project'}</h1>
                         <div>
-                            <p>Box Description: </p>
-                            <p>{project.description}</p>
+                            <p >Box Description: </p>
+                            <p style={{
+                                fontWeight: 300
+                                }}>{project.description}</p>
+                            <br/>
                             <p>Grow box ID: </p>
-                            <p>{project.box}</p>
+                            <p style={{
+                                fontWeight: 300
+                                }}>{project.box}</p>
+                            <br/>
+
+                            <ul>
+                                {status}
+                                
+                            </ul>
+
+                            <p>Temperature: </p>
+                            <p>Humidity: </p>
+                            <p>Schedule: </p>
                         </div>
                         <h2>Measurements</h2>
                         <div>
-                            <LineChart width={600} height={400} data={converted_measurements}>
+                            <LineChart width={400} height={400} data={converted_measurements}>
                                 <XAxis dataKey="timestamp" tickFormatter={formatXAxis}/>
                                 <YAxis />
                                 <Tooltip/>
