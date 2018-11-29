@@ -14,6 +14,20 @@ class ProjectPage extends React.Component {
         
         this.state = {
             hits: [],
+            loading: false,
+            humidity: '',
+            light: '',
+            schedule: {
+                COB_hour_off: '',
+                COB_hour_on: '',
+                vent_hour_off: '',
+                vent_hour_on: '',
+                water_hour_off: '',
+                water_hour_on: ''
+            },
+            temperature: '',
+            vent: '',
+            water: ''
           };
         
     }
@@ -32,7 +46,7 @@ class ProjectPage extends React.Component {
             mode: 'cors',
             headers
         }
-
+        this.setState({ loading: true })
         fetch(route, config)
 		.then(response => {
             console.log("REPONSE FROM API CALL", response);
@@ -44,7 +58,11 @@ class ProjectPage extends React.Component {
 			}
 			
         })
-        .then(data => this.setState({ status: data.status }))
+        .then(data => {
+            console.log("API RESPONSE DATA", data);
+            this.setState({...data, loading: false})
+            
+        })
         .catch(err => err)
    
     }
@@ -52,8 +70,8 @@ class ProjectPage extends React.Component {
     
 
     render() {
-        const { params, project, measurements} = this.props
-        const { status } = this.state;
+        const { params, project, measurements } = this.props
+        const { humidity, temperature, schedule, loading } = this.state;
         const converted_measurements = measurements && Object.keys(measurements)
         .map(key => (
             measurements[key]))
@@ -70,71 +88,77 @@ class ProjectPage extends React.Component {
 
         return (
             <div className={classes.container}>
-                <Card className={classes.card}>
                 {
-                    project &&
-                    <CardContent>
-                        <h1>{project.name || 'Project'}</h1>
-                        <div>
-                            <p >Box Description: </p>
-                            <p style={{
-                                fontWeight: 300
-                                }}>{project.description}</p>
-                            <br/>
-                            <p>Grow box ID: </p>
-                            <p style={{
-                                fontWeight: 300
-                                }}>{project.box}</p>
-                            <br/>
+                    loading ?
+                    <p>Loading...</p> :
+                    <Card className={classes.card}>
+                        {
+                            project &&
+                            <CardContent>
+                                <h1>{project.name || 'Project'}</h1>
+                                <div>
+                                    <p >Box Description: </p>
+                                    <p style={{
+                                        fontWeight: 300
+                                        }}>{project.description}</p>
+                                    <br/>
+                                    <p>Grow box ID: </p>
+                                    <p style={{
+                                        fontWeight: 300
+                                        }}>{project.box}</p>
+                                    <br/>
 
-                            <ul>
-                                {status}
+                                    <p><b>Temperature:</b> {temperature}</p>
+                                    <p><b>Humidity:</b> {humidity}</p>
+                                    <p><b>Schedule:</b> <br/>
+                                    <b>COB hour off: </b>{schedule.COB_hour_off}<br/>
+                                    <b>COB hour on: </b>{schedule.COB_hour_on}<br/>
+                                    <b>Vent hour off: </b>{schedule.vent_hour_off}<br/>
+                                    <b>Vent hour on: </b>{schedule.vent_hour_on}<br/>
+                                    <b>Water hour off: </b>{schedule.water_hour_off}<br/>
+                                    <b>Water hour on: </b>{schedule.water_hour_on}<br/>
+                                    </p>
+                                </div>
+                                <h2>Measurements</h2>
+                                <div>
+                                    <LineChart width={400} height={400} data={converted_measurements}>
+                                        <XAxis dataKey="timestamp" tickFormatter={formatXAxis}/>
+                                        <YAxis />
+                                        <Tooltip/>
+                                        <Legend />
+                                        <Line type="monotone" dataKey="humidity" stroke="#8884d8" fill='#8884d8'/>
+                                        <Line type="monotone" dataKey="temperature" stroke="#82ca9d" fill='#82ca9d'/>
+                                    </LineChart>
+
+                                </div>
                                 
-                            </ul>
+                                {/* <div>
+                                    {
+                                        converted_measurements && converted_measurements.length > 0 ?
+                                        converted_measurements.map((m, index) => (
+                                            <div key={index}>
+                                                <b>Humidity: </b> {m.humidity}
+                                                <br/>
+                                                <b>Temperature: </b> {m.temperature}
+                                                <br/>
+                                                <b>Time: </b> 
+                                                <Timestamp time={m.timestamp/1000} actualSeconds/>
+                                                <br/>
+                                                <b>---</b>
+                                            </div>
+                                            
+                                        )) :
+                                        <p>No measurements yet</p>
+                                        
+                                    }
 
-                            <p>Temperature: </p>
-                            <p>Humidity: </p>
-                            <p>Schedule: </p>
-                        </div>
-                        <h2>Measurements</h2>
-                        <div>
-                            <LineChart width={400} height={400} data={converted_measurements}>
-                                <XAxis dataKey="timestamp" tickFormatter={formatXAxis}/>
-                                <YAxis />
-                                <Tooltip/>
-                                <Legend />
-                                <Line type="monotone" dataKey="humidity" stroke="#8884d8" fill='#8884d8'/>
-                                <Line type="monotone" dataKey="temperature" stroke="#82ca9d" fill='#82ca9d'/>
-                            </LineChart>
-
-                        </div>
-                        
-                        {/* <div>
-                            {
-                                converted_measurements && converted_measurements.length > 0 ?
-                                converted_measurements.map((m, index) => (
-                                    <div key={index}>
-                                        <b>Humidity: </b> {m.humidity}
-                                        <br/>
-                                        <b>Temperature: </b> {m.temperature}
-                                        <br/>
-                                        <b>Time: </b> 
-                                        <Timestamp time={m.timestamp/1000} actualSeconds/>
-                                        <br/>
-                                        <b>---</b>
-                                    </div>
-                                    
-                                )) :
-                                <p>No measurements yet</p>
+                                </div> */}
                                 
-                            }
-
-                        </div> */}
-                        
-                    </CardContent> 
-                }
-                </Card>
-        </div>
+                            </CardContent> 
+                        }
+                    </Card>
+                }    
+            </div>
         )
     }
 }
