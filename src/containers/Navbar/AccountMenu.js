@@ -25,7 +25,7 @@ export const AccountMenu = ({
   classes
 }) => (
   <div>
-    <Button onClick={goToBoxes} variant='raised' color='secondary'>Grow boxes</Button>
+    <Button onClick={goToBoxes} variant='raised' color='secondary'>Grow box</Button>
     <IconButton
       aria-owns={anchorEl ? 'menu-appbar' : null}
       aria-haspopup="true"

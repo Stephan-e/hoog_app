@@ -1,19 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Card from '@material-ui/core/Card'
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 import CardContent from '@material-ui/core/CardContent'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import classes from './ProjectPage.scss'
+import axios from 'axios';
+
 
 import Moment from 'react-moment';
 import moment from 'moment'
-
+  
 class ProjectPage extends React.Component {
     constructor(props) {
         super(props);
         
         this.state = {
-            hits: [],
+            source: null,
             loading: false,
             humidity: '',
             light: '',
@@ -64,12 +68,40 @@ class ProjectPage extends React.Component {
             
         })
         .catch(err => err)
-   
+
+        const route2 = 'https://' + this.props.project.box +'.balena-devices.com/snapshot2'
+
+        const config2 = {
+            // credentials: 'include',
+            method: 'GET',
+            mode: 'cors',
+            responseType: 'arraybuffer',
+            headers
+        }
+        
+        axios
+        .get(
+          route2,
+          config2,
+        )
+        .then(response => {
+          const base64 = btoa(
+            new Uint8Array(response.data).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              '',
+            ),
+          );
+          this.setState({ source: "data:;base64," + base64 });
+        });
+    
     }
+
+    
 
     render() {
         const { params, project, measurements } = this.props
-        const { humidity, temperature, schedule, loading, vent, light, water } = this.state;
+        const { humidity, temperature, schedule, loading, vent, light, water, source } = this.state;
+
         const converted_measurements = measurements && Object.keys(measurements)
         .map(key => (
             measurements[key]))
@@ -78,12 +110,9 @@ class ProjectPage extends React.Component {
     
         function formatXAxis(tickItem) {
             // If using moment.js
-            return moment(tickItem).format(' LT')
+            return moment(tickItem).format('D MMM hh:mm')
             }
-    
-         console.log("CONVERTED MEASUERMENTS", vent);
         
-
         return (
             <div>
                 <div className={classes.container}>
@@ -92,27 +121,31 @@ class ProjectPage extends React.Component {
                         <p>Loading...</p> :
                         <Card className={classes.card}>
                         {
-                                project &&
-                                <CardContent>
-                                    <h2 style ={{textAlign: 'center'}}>{project.name || 'Project'}</h2>
-                                    <div>
-                                        <div style={{ float: 'left'}}>
-                                            <p ><b>Box Description:</b> </p>
+                            project &&
+                            <CardContent>
+                                    <h2 style ={{textAlign: 'center'}} >{project.name || 'Project'}</h2>
+                                    <img  src={this.state.source} />
+
+                                    <Grid container spacing={24}>
+                                        <Grid item xs={6}>
+                                        <p ><b>Box Description:</b> </p>
                                             <p style={{
                                                 fontWeight: 300
                                                 }}>{project.description}</p>
-                                        </div>
-                                        <div style={{float: 'right'}}>
-                                            <p ><b>ID: </b></p>
+                                            
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                        <p ><b>ID: </b></p>
                                             <p style={{
                                                 fontWeight: 300,
+                                                fontSize: 8,
                                                 fontStyle: 'italic'
                                                 }}>{project.box}</p>
-                                        </div>
-                                        <br/>
-                                        
-                                    </div>
-                                    </CardContent>
+                                        </Grid>
+                                    </Grid>
+                                    
+                                    
+                                </CardContent>
                         }
                         </Card>
                     }
@@ -123,56 +156,62 @@ class ProjectPage extends React.Component {
                         null :
                         <Card className={classes.card}>
                         {
-                                project &&
-                                <CardContent>
-                                    <div>
-                                        <div style={{float: 'left'}}>
-                                            <p><b>Temperature:</b> {temperature}º</p>
-                                            <p><b>Humidity:</b> {humidity}%</p>
-                                        </div>
-                                        <div style={{float: 'right'}}>
-                                            <p><b>Vent: </b>  
-                                                {{vent} ? (
-                                                    <a>On</a>
-                                                ) : <a>Off</a>}
-                                            </p>
-                                            <p><b>Light: </b> 
-                                                {{light} ? (
-                                                    <a>On</a>
-                                                ) : <a>Off</a>}
-                                            </p>
-                                            <p><b>Water: </b> 
-                                                {{water} ? (
-                                                    <a>On</a>
-                                                ) : <a>Off</a>}
-                                            </p>
-                                            <br/>
-                                        </div>
-                                    </div>
-                                    </CardContent>
-                        }
-                        </Card>
-                    }
-                </div>
-                <div className={classes.container}>
-                    {
-                        loading ?
-                        null :
-                        <Card className={classes.card}>
-                        {
-                                project &&
-                                <CardContent>
-                                    <div>
-                                        <p><b>Schedule:</b> <br/>
-                                        <b>COB hour on: </b>{schedule.COB_hour_on}:00<br/>
-                                        <b>COB hour off: </b>{schedule.COB_hour_off}:00<br/>
-                                        <b>Vent hour on: </b>{schedule.vent_hour_on}:00<br/>
-                                        <b>Vent hour off: </b>{schedule.vent_hour_off}:00<br/>
-                                        <b>Water hour on: </b>{schedule.water_hour_on}:00<br/>
-                                        <b>Water hour off: </b>{schedule.water_hour_off}:01<br/>
+                            project &&
+                            <CardContent>
+                                <Grid container spacing={24}>
+                                    <Grid item xs={6}>
+                                        <p><b>Temperature:</b> {temperature}º</p>
+                                        <p><b>Humidity:</b> {humidity}%</p>
+                                        <p><b>Soil Moisture:</b> {humidity}%</p>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                    <   p><b>Vent: </b>  
+                                            {vent ? (
+                                                <a>On</a>
+                                            ) : <a>Off</a>}
                                         </p>
-                                    </div>
-                                    </CardContent>
+                                        <p><b>Light: </b> 
+                                            {light ? (
+                                                <a>On</a>
+                                            ) : <a>Off</a>}
+                                        </p>
+                                        <p><b>Water: </b> 
+                                            {water ? (
+                                                <a>On</a>
+                                            ) : <a>Off</a>}
+                                        </p>
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
+                        }
+                        </Card>
+                    }
+                </div>
+                <div className={classes.container}>
+                    {
+                        loading ?
+                        null :
+                        <Card className={classes.card}>
+                        {
+                            project &&
+                            <CardContent>
+                            <p><b>Schedule:</b> <br/> </p>
+
+                            <Grid container spacing={24}>
+
+                                <Grid item xs={6}>
+                                    <b>COB hour on: </b>{schedule.COB_hour_on}:00<br/>
+                                    <b>Vent hour on: </b>{schedule.vent_hour_on}:00<br/>
+                                    <b>Water hour on: </b>{schedule.water_hour_on}:00<br/>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <b>COB hour off: </b>{schedule.COB_hour_off}:00<br/>
+                                    <b>Vent hour off: </b>{schedule.vent_hour_off}:00<br/>
+                                    <b>Water hour off: </b>{schedule.water_hour_off}:01<br/>
+                                </Grid>
+                            </Grid>
+                                    
+                            </CardContent>
                         }
                         </Card>
                     }
@@ -184,38 +223,16 @@ class ProjectPage extends React.Component {
                             <CardContent>
                                 <h2 style ={{textAlign: 'center'}}>Measurements</h2>
                                 <div>
-                                    <LineChart width={400} height={400} data={converted_measurements}>
-                                        <XAxis dataKey="timestamp" tickFormatter={formatXAxis}/>
-                                        <YAxis />
-                                        <Tooltip/>
+                                    <LineChart width={300} height={300} data={converted_measurements} margin={{right: 15, left: 15}}>
+                                        <XAxis  dataKey="timestamp" tickFormatter={formatXAxis} />
+                                        <YAxis  width={20}  />
+                                        <Tooltip />
                                         <Legend />
-                                        <Line type="monotone" dataKey="humidity" stroke="#8884d8" fill='#8884d8'/>
-                                        <Line type="monotone" dataKey="temperature" stroke="#82ca9d" fill='#82ca9d'/>
+                                        <Line type="monotone" dataKey="temperature" stroke="#449B05" dot={false}/>
+                                        <Line type="monotone" dataKey="humidity" stroke="#2C2B6F" dot={false}/>
                                     </LineChart>
 
                                 </div>
-                                
-                                {/* <div>
-                                    {
-                                        converted_measurements && converted_measurements.length > 0 ?
-                                        converted_measurements.map((m, index) => (
-                                            <div key={index}>
-                                                <b>Humidity: </b> {m.humidity}
-                                                <br/>
-                                                <b>Temperature: </b> {m.temperature}
-                                                <br/>
-                                                <b>Time: </b> 
-                                                <Timestamp time={m.timestamp/1000} actualSeconds/>
-                                                <br/>
-                                                <b>---</b>
-                                            </div>
-                                            
-                                        )) :
-                                        <p>No measurements yet</p>
-                                        
-                                    }
-
-                                </div> */}
                                 
                             </CardContent> 
                         }

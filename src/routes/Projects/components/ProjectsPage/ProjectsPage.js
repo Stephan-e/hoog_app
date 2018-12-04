@@ -27,18 +27,20 @@ export const ProjectsPage = ({
         onRequestClose={toggleDialog}
       />
       <div className={classes.tiles}>
-        <NewProjectTile onClick={toggleDialog} />
+        
         {!isEmpty(projects) &&
           projects.map((project, ind) => (
             <ProjectTile
               key={`Project-${project.id}-${ind}`}
               name={project.name}
               description={project.description}
+              box={project.box}
               onSelect={() => goToProject(project.id)}
               onDelete={() => deleteProject(project.id)}
             />
           ))}
       </div>
+      <NewProjectTile onClick={toggleDialog} />
     </div>
   )
 

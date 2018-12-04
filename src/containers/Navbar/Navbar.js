@@ -8,6 +8,8 @@ import AccountMenu from './AccountMenu'
 import LoginMenu from './LoginMenu'
 import { LIST_PATH } from 'constants'
 
+import logo from './logo.png'
+
 export const Navbar = ({
   avatarUrl,
   displayName,
@@ -21,7 +23,8 @@ export const Navbar = ({
   classes
 }) => (
   <AppBar position="static">
-    <Toolbar>
+    <Toolbar>  
+    <img style = {{width: '30px'}} src={logo}/>
       <Typography
         variant="h6"
         color="#2C2B6F"
@@ -30,6 +33,7 @@ export const Navbar = ({
         to={authExists ? LIST_PATH : '/'}>
         hoog
       </Typography>
+
       {authExists ? (
         <AccountMenu
           avatarUrl={avatarUrl}

@@ -24,7 +24,7 @@ export const NewProjectDialog = ({
         <Field
           name="name"
           component={TextField}
-          label="Project Name"
+          label="Grow Box Name"
           validate={[required]}
         />
         
@@ -33,7 +33,7 @@ export const NewProjectDialog = ({
       <Field
           name="description"
           component={TextField}
-          label="Project Description"
+          label="Grow Box Description"
           validate={[required]}
         />
         </DialogContent>
@@ -41,7 +41,7 @@ export const NewProjectDialog = ({
         <Field
           name="box"
           component={TextField}
-          label="Project Name"
+          label="Box Identifier"
           validate={[required]}
         />
          </DialogContent>
