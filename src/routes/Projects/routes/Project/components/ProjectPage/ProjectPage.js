@@ -4,7 +4,7 @@ import Card from '@material-ui/core/Card'
 import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Input from '@material-ui/core/Input'
+import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
 import CardContent from '@material-ui/core/CardContent'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
@@ -47,38 +47,43 @@ class ProjectPage extends React.Component {
         
     }
 
-   
+   getStatus = () => {
+    let headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    const route = 'https://' + this.props.project.box +'.balena-devices.com/status'
+    const config = {
+        // credentials: 'include',
+        method: 'GET',
+        mode: 'cors',
+        headers
+    }
+    this.setState({ loading: true })
+    fetch(route, config)
+    .then(response => {
+        if (response.ok) {
+            return response.json()
+        } else {
+            return response
+        }
+        
+    })
+    .then(data => {
+        this.setState({...data, loading: false})
+        
+    })
+    .catch(err => err)
+   }
+
     componentDidMount () {
-        let headers = {
+       this.getStatus()
+
+       let headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
-
-        const route = 'https://' + this.props.project.box +'.balena-devices.com/status'
-        const config = {
-            // credentials: 'include',
-            method: 'GET',
-            mode: 'cors',
-            headers
-        }
-        this.setState({ loading: true })
-        fetch(route, config)
-		.then(response => {
-            console.log("REPONSE FROM API CALL", response);
-            
-			if (response.ok) {
-				return response.json()
-			} else {
-				return response
-			}
-			
-        })
-        .then(data => {
-            console.log("API RESPONSE DATA", data);
-            this.setState({...data, loading: false})
-            
-        })
-        .catch(err => err)
 
         const route2 = 'https://' + this.props.project.box +'.balena-devices.com/snapshot2'
 
@@ -109,6 +114,40 @@ class ProjectPage extends React.Component {
 
     postNewValues = () => {
         console.log("NEW VALUES", this.state.new_values)
+
+        let headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+
+        const route = 'https://' + this.props.project.box +'.balena-devices.com/schedule'
+        const config = {
+            // credentials: 'include',
+            method: 'POST',
+            mode: 'cors',
+            headers,
+            body: JSON.stringify(this.state.new_values)
+        }
+        this.setState({ loading: true })
+        fetch(route, config)
+		.then(response => {
+            console.log("REPONSE FROM POST CALL", response);
+            
+			if (response.ok) {
+				return response.json()
+			} else {
+				return response
+			}
+			
+        })
+        .then(data => {
+            console.log("API POST RESPONSE DATA", data);
+            this.setState({ set_schedule: false })
+            this.getStatus()
+            
+        })
+        .catch(err => err)
+        
     }
 
     
@@ -210,7 +249,7 @@ class ProjectPage extends React.Component {
                 >
                     <div className={classes.container}>
                         <h2>Update schedule</h2>
-                        <Input
+                        <TextField
                             placeholder="0"
                             label="COB on"
                             type='number'
@@ -220,6 +259,62 @@ class ProjectPage extends React.Component {
                                 this.setState(this.state)
                             }}
                         />
+
+                        <TextField
+                            placeholder="0"
+                            label="COB off"
+                            type='number'
+                            value={this.state.new_values.COB_hour_off}
+                            onChange={e => {
+                                this.state.new_values.COB_hour_off = e.target.value
+                                this.setState(this.state)
+                            }}
+                        />
+
+                        <TextField
+                            placeholder="0"
+                            label="Vent on"
+                            type='number'
+                            value={this.state.new_values.vent_hour_on}
+                            onChange={e => {
+                                this.state.new_values.vent_hour_on = e.target.value
+                                this.setState(this.state)
+                            }}
+                        />
+
+                        <TextField
+                            placeholder="0"
+                            label="Vent off"
+                            type='number'
+                            value={this.state.new_values.vent_hour_off}
+                            onChange={e => {
+                                this.state.new_values.vent_hour_off = e.target.value
+                                this.setState(this.state)
+                            }}
+                        />
+
+                        <TextField
+                            placeholder="0"
+                            label="Water on"
+                            type='number'
+                            value={this.state.new_values.water_hour_on}
+                            onChange={e => {
+                                this.state.new_values.water_hour_on = e.target.value
+                                this.setState(this.state)
+                            }}
+                        />
+
+                        <TextField
+                            placeholder="0"
+                            label="Water off"
+                            type='number'
+                            value={this.state.new_values.water_hour_off}
+                            onChange={e => {
+                                this.state.new_values.water_hour_off = e.target.value
+                                this.setState(this.state)
+                            }}
+                        />
+
                         <br/><br/>
                         <Button color='primary' variant='contained' onClick={() => this.setState({ set_schedule: false })}>Cancel</Button>
                         <Button color='primary' variant='contained' onClick={this.postNewValues}>Update</Button>
