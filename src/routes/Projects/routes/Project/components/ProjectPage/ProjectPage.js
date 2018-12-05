@@ -1,8 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Card from '@material-ui/core/Card'
-import Paper from '@material-ui/core/Paper';
+import DialogContent from '@material-ui/core/DialogContent';
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Input from '@material-ui/core/Input'
+import Dialog from '@material-ui/core/Dialog'
 import CardContent from '@material-ui/core/CardContent'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import classes from './ProjectPage.scss'
@@ -31,7 +34,15 @@ class ProjectPage extends React.Component {
             },
             temperature: '',
             vent: '',
-            water: ''
+            water: '',
+            new_values: {
+                COB_hour_off: '',
+                COB_hour_on: '',
+                vent_hour_off: '',
+                vent_hour_on: '',
+                water_hour_off: '',
+                water_hour_on: ''
+            },
           };
         
     }
@@ -94,6 +105,10 @@ class ProjectPage extends React.Component {
           this.setState({ source: "data:;base64," + base64 });
         });
     
+    }
+
+    postNewValues = () => {
+        console.log("NEW VALUES", this.state.new_values)
     }
 
     
@@ -187,6 +202,29 @@ class ProjectPage extends React.Component {
                         </Card>
                     }
                 </div>
+                
+                <Dialog
+                    
+                    open={this.state.set_schedule}
+                    onClose={() => this.setState({ set_schedule: false })}
+                >
+                    <div className={classes.container}>
+                        <h2>Update schedule</h2>
+                        <Input
+                            placeholder="0"
+                            label="COB on"
+                            type='number'
+                            value={this.state.new_values.COB_hour_on}
+                            onChange={e => {
+                                this.state.new_values.COB_hour_on = e.target.value
+                                this.setState(this.state)
+                            }}
+                        />
+                        <br/><br/>
+                        <Button color='primary' variant='contained' onClick={() => this.setState({ set_schedule: false })}>Cancel</Button>
+                        <Button color='primary' variant='contained' onClick={this.postNewValues}>Update</Button>
+                    </div>
+                </Dialog>
                 <div className={classes.container}>
                     {
                         loading ?
@@ -195,6 +233,7 @@ class ProjectPage extends React.Component {
                         {
                             project &&
                             <CardContent>
+                            <Button color='primary' variant='contained' onClick={() => this.setState({ set_schedule: true })}>Update</Button>
                             <p><b>Schedule:</b> <br/> </p>
 
                             <Grid container spacing={24}>
